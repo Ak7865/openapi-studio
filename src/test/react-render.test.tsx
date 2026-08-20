@@ -17,5 +17,11 @@ describe('App', () => {
     ).toBeInTheDocument();
 
     expect(screen.getByText('Open-source API development workspace.')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', {
+        name: 'Request Editor',
+        level: 2,
+      }),
+    ).toBeInTheDocument();
   });
 });

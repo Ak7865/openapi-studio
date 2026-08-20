@@ -1,4 +1,5 @@
 import '../App.css';
+import WorkspaceEditor from '../features/workspace/WorkspaceEditor';
 
 import { appMetadata } from './appMetadata';
 
@@ -17,6 +18,7 @@ function App() {
           <h2 id="welcome-heading">Welcome to OpenAPI Studio</h2>
           <p>The application foundation is ready.</p>
         </section>
+        <WorkspaceEditor />
       </main>
     </div>
   );
