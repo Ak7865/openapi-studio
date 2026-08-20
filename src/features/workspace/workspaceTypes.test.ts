@@ -9,12 +9,20 @@ describe('workspace types', () => {
       url: 'https://example.com',
       queryParams: [],
       headers: [],
+      body: {
+        type: 'none',
+        content: '',
+      },
     };
 
     expect(request.method satisfies HttpMethod).toBe('GET');
     expect(request.url).toBe('https://example.com');
     expect(request.queryParams).toEqual([]);
     expect(request.headers).toEqual([]);
+    expect(request.body).toEqual({
+      type: 'none',
+      content: '',
+    });
   });
 
   it('supports query parameters and headers', () => {
@@ -40,6 +48,10 @@ describe('workspace types', () => {
           enabled: true,
         },
       ],
+      body: {
+        type: 'none',
+        content: '',
+      },
     };
 
     expect(request.queryParams).toHaveLength(2);
@@ -56,6 +68,28 @@ describe('workspace types', () => {
       value: 'application/json',
       enabled: true,
     });
+  });
+
+  it('supports request body configuration', () => {
+    const request: WorkspaceRequest = {
+      method: 'POST',
+      url: 'https://example.com/users',
+      queryParams: [],
+      headers: [
+        {
+          key: 'Content-Type',
+          value: 'application/json',
+          enabled: true,
+        },
+      ],
+      body: {
+        type: 'json',
+        content: '{"name":"Akhter"}',
+      },
+    };
+
+    expect(request.body.type).toBe('json');
+    expect(request.body.content).toBe('{"name":"Akhter"}');
   });
 
   it('supports the initial HTTP response model', () => {

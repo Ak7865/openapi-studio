@@ -6,11 +6,19 @@ export interface WorkspaceParameter {
   enabled: boolean;
 }
 
+export type RequestBodyType = 'none' | 'json' | 'text' | 'form-data';
+
+export interface WorkspaceRequestBody {
+  type: RequestBodyType;
+  content: string;
+}
+
 export interface WorkspaceRequest {
   method: HttpMethod;
   url: string;
   queryParams: WorkspaceParameter[];
   headers: WorkspaceParameter[];
+  body: WorkspaceRequestBody;
 }
 
 export interface WorkspaceResponse {
