@@ -1,12 +1,14 @@
 import '../App.css';
 
+import { appMetadata } from './appMetadata';
+
 function App() {
   return (
     <div className="app-shell">
       <header className="app-header">
         <div>
-          <h1>OpenAPI Studio</h1>
-          <p>Open-source API development workspace.</p>
+          <h1>{appMetadata.name}</h1>
+          <p>{appMetadata.description}</p>
         </div>
       </header>
 
