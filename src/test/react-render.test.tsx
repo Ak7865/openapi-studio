@@ -1,14 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-function TestComponent() {
-  return <h1>OpenAPI Studio</h1>;
-}
+import App from '../app/App';
 
-describe('React testing infrastructure', () => {
-  it('renders a React component', () => {
-    render(<TestComponent />);
+describe('App', () => {
+  it('renders the OpenAPI Studio application shell', () => {
+    render(<App />);
 
     expect(screen.getByRole('heading', { name: 'OpenAPI Studio' })).toBeInTheDocument();
+
+    expect(screen.getByText('Open-source API development workspace.')).toBeInTheDocument();
   });
 });
