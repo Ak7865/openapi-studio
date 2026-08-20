@@ -1,8 +1,16 @@
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS';
 
+export interface WorkspaceParameter {
+  key: string;
+  value: string;
+  enabled: boolean;
+}
+
 export interface WorkspaceRequest {
   method: HttpMethod;
   url: string;
+  queryParams: WorkspaceParameter[];
+  headers: WorkspaceParameter[];
 }
 
 export interface WorkspaceResponse {
