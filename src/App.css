@@ -1,9 +1,27 @@
-main {
+.app-shell {
+  min-height: 100vh;
+}
+
+.app-header {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1.5rem;
+}
+
+.app-header h1 {
+  margin: 0;
+}
+
+.app-header p {
+  margin: 0.5rem 0 0;
+  color: #6b7280;
+}
+
+.app-content {
   width: min(100% - 2rem, 1200px);
   margin: 0 auto;
   padding: 2rem 0;
 }
 
-h1 {
-  margin: 0;
+.app-content h2 {
+  margin-top: 0;
 }
