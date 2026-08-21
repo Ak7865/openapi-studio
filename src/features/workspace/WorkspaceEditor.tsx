@@ -1,55 +1,52 @@
 import { useState } from 'react';
 
 import {
+  addRequestParameter,
+  removeRequestParameter,
+  updateRequestBody,
+  updateRequestMethod,
+  updateRequestParameter,
+  updateRequestUrl,
+} from './workspaceActions';
+import {
   createInitialWorkspaceRequest,
   type HttpMethod,
+  type RequestBodyType,
   type WorkspaceParameter,
   type WorkspaceRequest,
 } from './workspaceTypes';
 
 const httpMethods: HttpMethod[] = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'];
 
-function createParameter(): WorkspaceParameter {
-  return {
-    key: '',
-    value: '',
-    enabled: true,
-  };
-}
-
 function WorkspaceEditor() {
   const [request, setRequest] = useState<WorkspaceRequest>(createInitialWorkspaceRequest);
 
-  const updateRequest = <K extends keyof WorkspaceRequest>(key: K, value: WorkspaceRequest[K]) => {
-    setRequest((current) => ({
-      ...current,
-      [key]: value,
-    }));
+  const handleMethodChange = (method: HttpMethod) => {
+    setRequest((current) => updateRequestMethod(current, method));
   };
 
-  const updateParameter = (
+  const handleUrlChange = (url: string) => {
+    setRequest((current) => updateRequestUrl(current, url));
+  };
+
+  const handleParameterChange = (
     type: 'queryParams' | 'headers',
     index: number,
     parameter: WorkspaceParameter,
   ) => {
-    setRequest((current) => ({
-      ...current,
-      [type]: current[type].map((item, itemIndex) => (itemIndex === index ? parameter : item)),
-    }));
+    setRequest((current) => updateRequestParameter(current, type, index, parameter));
   };
 
-  const addParameter = (type: 'queryParams' | 'headers') => {
-    setRequest((current) => ({
-      ...current,
-      [type]: [...current[type], createParameter()],
-    }));
+  const handleAddParameter = (type: 'queryParams' | 'headers') => {
+    setRequest((current) => addRequestParameter(current, type));
   };
 
-  const removeParameter = (type: 'queryParams' | 'headers', index: number) => {
-    setRequest((current) => ({
-      ...current,
-      [type]: current[type].filter((_, itemIndex) => itemIndex !== index),
-    }));
+  const handleRemoveParameter = (type: 'queryParams' | 'headers', index: number) => {
+    setRequest((current) => removeRequestParameter(current, type, index));
+  };
+
+  const handleBodyChange = (type: RequestBodyType, content: string) => {
+    setRequest((current) => updateRequestBody(current, type, content));
   };
 
   return (
@@ -61,7 +58,7 @@ function WorkspaceEditor() {
         <select
           id="request-method"
           value={request.method}
-          onChange={(event) => updateRequest('method', event.target.value as HttpMethod)}
+          onChange={(event) => handleMethodChange(event.target.value as HttpMethod)}
         >
           {httpMethods.map((method) => (
             <option key={method} value={method}>
@@ -75,7 +72,7 @@ function WorkspaceEditor() {
           id="request-url"
           type="url"
           value={request.url}
-          onChange={(event) => updateRequest('url', event.target.value)}
+          onChange={(event) => handleUrlChange(event.target.value)}
           placeholder="https://example.com"
         />
 
@@ -91,7 +88,7 @@ function WorkspaceEditor() {
               aria-label={`Query parameter ${index + 1} key`}
               value={parameter.key}
               onChange={(event) =>
-                updateParameter('queryParams', index, {
+                handleParameterChange('queryParams', index, {
                   ...parameter,
                   key: event.target.value,
                 })
@@ -103,7 +100,7 @@ function WorkspaceEditor() {
               aria-label={`Query parameter ${index + 1} value`}
               value={parameter.value}
               onChange={(event) =>
-                updateParameter('queryParams', index, {
+                handleParameterChange('queryParams', index, {
                   ...parameter,
                   value: event.target.value,
                 })
@@ -116,7 +113,7 @@ function WorkspaceEditor() {
                 type="checkbox"
                 checked={parameter.enabled}
                 onChange={(event) =>
-                  updateParameter('queryParams', index, {
+                  handleParameterChange('queryParams', index, {
                     ...parameter,
                     enabled: event.target.checked,
                   })
@@ -125,13 +122,13 @@ function WorkspaceEditor() {
               Enabled
             </label>
 
-            <button type="button" onClick={() => removeParameter('queryParams', index)}>
+            <button type="button" onClick={() => handleRemoveParameter('queryParams', index)}>
               Remove
             </button>
           </div>
         ))}
 
-        <button type="button" onClick={() => addParameter('queryParams')}>
+        <button type="button" onClick={() => handleAddParameter('queryParams')}>
           Add query parameter
         </button>
       </fieldset>
@@ -145,7 +142,7 @@ function WorkspaceEditor() {
               aria-label={`Header ${index + 1} key`}
               value={parameter.key}
               onChange={(event) =>
-                updateParameter('headers', index, {
+                handleParameterChange('headers', index, {
                   ...parameter,
                   key: event.target.value,
                 })
@@ -157,7 +154,7 @@ function WorkspaceEditor() {
               aria-label={`Header ${index + 1} value`}
               value={parameter.value}
               onChange={(event) =>
-                updateParameter('headers', index, {
+                handleParameterChange('headers', index, {
                   ...parameter,
                   value: event.target.value,
                 })
@@ -170,7 +167,7 @@ function WorkspaceEditor() {
                 type="checkbox"
                 checked={parameter.enabled}
                 onChange={(event) =>
-                  updateParameter('headers', index, {
+                  handleParameterChange('headers', index, {
                     ...parameter,
                     enabled: event.target.checked,
                   })
@@ -179,13 +176,13 @@ function WorkspaceEditor() {
               Enabled
             </label>
 
-            <button type="button" onClick={() => removeParameter('headers', index)}>
+            <button type="button" onClick={() => handleRemoveParameter('headers', index)}>
               Remove
             </button>
           </div>
         ))}
 
-        <button type="button" onClick={() => addParameter('headers')}>
+        <button type="button" onClick={() => handleAddParameter('headers')}>
           Add header
         </button>
       </fieldset>
@@ -198,13 +195,7 @@ function WorkspaceEditor() {
           id="request-body-type"
           value={request.body.type}
           onChange={(event) =>
-            setRequest((current) => ({
-              ...current,
-              body: {
-                ...current.body,
-                type: event.target.value as WorkspaceRequest['body']['type'],
-              },
-            }))
+            handleBodyChange(event.target.value as RequestBodyType, request.body.content)
           }
         >
           <option value="none">None</option>
@@ -217,15 +208,7 @@ function WorkspaceEditor() {
         <textarea
           id="request-body-content"
           value={request.body.content}
-          onChange={(event) =>
-            setRequest((current) => ({
-              ...current,
-              body: {
-                ...current.body,
-                content: event.target.value,
-              },
-            }))
-          }
+          onChange={(event) => handleBodyChange(request.body.type, event.target.value)}
           placeholder="Request body"
         />
       </fieldset>
