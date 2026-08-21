@@ -1,17 +1,11 @@
 import { useState } from 'react';
 
-import type { HttpMethod, WorkspaceParameter, WorkspaceRequest } from './workspaceTypes';
-
-const defaultRequest: WorkspaceRequest = {
-  method: 'GET',
-  url: '',
-  queryParams: [],
-  headers: [],
-  body: {
-    type: 'none',
-    content: '',
-  },
-};
+import {
+  createInitialWorkspaceRequest,
+  type HttpMethod,
+  type WorkspaceParameter,
+  type WorkspaceRequest,
+} from './workspaceTypes';
 
 const httpMethods: HttpMethod[] = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'];
 
@@ -24,7 +18,7 @@ function createParameter(): WorkspaceParameter {
 }
 
 function WorkspaceEditor() {
-  const [request, setRequest] = useState<WorkspaceRequest>(defaultRequest);
+  const [request, setRequest] = useState<WorkspaceRequest>(createInitialWorkspaceRequest);
 
   const updateRequest = <K extends keyof WorkspaceRequest>(key: K, value: WorkspaceRequest[K]) => {
     setRequest((current) => ({

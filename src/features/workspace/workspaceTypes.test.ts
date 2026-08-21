@@ -1,6 +1,48 @@
 import { describe, expect, it } from 'vitest';
 
-import type { HttpMethod, WorkspaceRequest, WorkspaceResponse } from './workspaceTypes';
+import {
+  createInitialWorkspaceRequest,
+  type HttpMethod,
+  type WorkspaceRequest,
+  type WorkspaceResponse,
+} from './workspaceTypes';
+
+describe('createInitialWorkspaceRequest', () => {
+  it('creates a clean initial request state', () => {
+    const request = createInitialWorkspaceRequest();
+
+    expect(request).toEqual({
+      method: 'GET',
+      url: '',
+      queryParams: [],
+      headers: [],
+      body: {
+        type: 'none',
+        content: '',
+      },
+    });
+  });
+
+  it('creates independent request state', () => {
+    const first = createInitialWorkspaceRequest();
+    const second = createInitialWorkspaceRequest();
+
+    first.queryParams.push({
+      key: 'page',
+      value: '1',
+      enabled: true,
+    });
+
+    first.headers.push({
+      key: 'Accept',
+      value: 'application/json',
+      enabled: true,
+    });
+
+    expect(second.queryParams).toEqual([]);
+    expect(second.headers).toEqual([]);
+  });
+});
 
 describe('workspace types', () => {
   it('supports the initial HTTP request model', () => {

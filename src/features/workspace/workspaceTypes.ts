@@ -27,3 +27,16 @@ export interface WorkspaceResponse {
   headers: Record<string, string>;
   body: string;
 }
+
+export function createInitialWorkspaceRequest(): WorkspaceRequest {
+  return {
+    method: 'GET',
+    url: '',
+    queryParams: [],
+    headers: [],
+    body: {
+      type: 'none',
+      content: '',
+    },
+  };
+}
